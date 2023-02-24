@@ -13,3 +13,7 @@ Open Docker Dashboard and make sure that container rests is running.
 ### Create a user
 
 ![Screenshot](docs/create_user.jpg)
+
+### Login
+
+![Screenshot](docs/login.jpg)
