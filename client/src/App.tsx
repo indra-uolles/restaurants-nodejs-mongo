@@ -46,7 +46,9 @@ function Layout() {
           <Link to="/">Public Page</Link>
         </li>
         <li>
-          <Link to="/protected">Protected Page</Link>
+          <Link to="/protected" data-qa="protected-link">
+            Protected Page
+          </Link>
         </li>
       </ul>
 
@@ -102,13 +104,14 @@ function AuthStatus() {
   let navigate = useNavigate();
 
   if (!auth.user) {
-    return <p>You are not logged in.</p>;
+    return <p data-qa="not-logged">You are not logged in.</p>;
   }
 
   return (
     <p>
       Welcome {auth.user}!{" "}
       <button
+        data-qa="sign-out-btn"
         onClick={() => {
           auth.signout(() => navigate("/"));
         }}
@@ -172,5 +175,5 @@ function PublicPage() {
 }
 
 function ProtectedPage() {
-  return <h3>Protected</h3>;
+  return <h3 data-qa="protected-page">Protected</h3>;
 }

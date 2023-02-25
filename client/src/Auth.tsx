@@ -10,7 +10,7 @@ export default function (props: any) {
 
   if (authMode === "signin") {
     return (
-      <div className="Auth-form-container">
+      <div className="Auth-form-container" data-qa="sign-in">
         <form className="Auth-form" onSubmit={handleSubmit}>
           <div className="Auth-form-content">
             <h3 className="Auth-form-title">Sign In</h3>
@@ -27,6 +27,7 @@ export default function (props: any) {
                 className="form-control mt-1"
                 placeholder="Enter email"
                 name="email"
+                data-qa="email"
               />
             </div>
             <div className="form-group mt-3">
@@ -36,10 +37,13 @@ export default function (props: any) {
                 className="form-control mt-1"
                 placeholder="Enter password"
                 name="password"
+                data-qa="password"
               />
             </div>
             <div className="d-grid gap-2 mt-3">
-              <button className="btn btn-primary">Log in</button>
+              <button className="btn btn-primary" data-qa="submit">
+                Log in
+              </button>
             </div>
             <p className="text-center mt-2">
               Forgot <a href="#">password?</a>
@@ -68,6 +72,7 @@ export default function (props: any) {
               className="form-control mt-1"
               placeholder="e.g Jane Doe"
               name="username"
+              data-qa="username"
             />
           </div>
           <div className="form-group mt-3">
@@ -77,6 +82,7 @@ export default function (props: any) {
               className="form-control mt-1"
               placeholder="Email Address"
               name="email"
+              data-qa="email"
             />
           </div>
           <div className="form-group mt-3">
@@ -86,6 +92,7 @@ export default function (props: any) {
               className="form-control mt-1"
               placeholder="Password"
               name="password"
+              data-qa="password"
             />
           </div>
           <div className="form-group mt-3">
@@ -95,10 +102,13 @@ export default function (props: any) {
               className="form-control mt-1"
               placeholder="Repeat password"
               name="repeat_password"
+              data-qa="repeat_password"
             />
           </div>
           <div className="d-grid gap-2 mt-3">
-            <button className="btn btn-primary">Sign up</button>
+            <button className="btn btn-primary" data-qa="submit">
+              Sign up
+            </button>
           </div>
           <p className="text-center mt-2">
             Forgot <a href="#">password?</a>
