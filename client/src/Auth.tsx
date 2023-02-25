@@ -16,7 +16,11 @@ export default function (props: any) {
             <h3 className="Auth-form-title">Sign In</h3>
             <div className="text-center">
               Not registered yet?{" "}
-              <span className="link-primary" onClick={changeAuthMode}>
+              <span
+                className="link-primary"
+                onClick={changeAuthMode}
+                data-qa="change-auth-mode"
+              >
                 Sign Up
               </span>
             </div>
@@ -61,14 +65,17 @@ export default function (props: any) {
           <h3 className="Auth-form-title">Sign Up</h3>
           <div className="text-center">
             Already registered?{" "}
-            <span className="link-primary" onClick={changeAuthMode}>
+            <span
+              className="link-primary"
+              onClick={changeAuthMode}
+              data-qa="change-auth-mode"
+            >
               Sign In
             </span>
           </div>
           <div className="form-group mt-3">
             <label>Full Name</label>
             <input
-              type="email"
               className="form-control mt-1"
               placeholder="e.g Jane Doe"
               name="username"

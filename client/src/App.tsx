@@ -58,8 +58,14 @@ function Layout() {
 }
 
 interface AuthContextType {
-  user: any;
+  user: string;
   signin: (email: string, password: string, callback: VoidFunction) => void;
+  signup: (
+    username: string,
+    email: string,
+    password: string,
+    callback: VoidFunction
+  ) => void;
   signout: (callback: VoidFunction) => void;
 }
 
@@ -69,14 +75,14 @@ const apiClient = new ApiClient();
 function AuthProvider({ children }: { children: React.ReactNode }) {
   let [user, setUser] = React.useState<any>(null);
 
-  let signin = (email: string, password: string, callback: VoidFunction) => {
+  const signin = (email: string, password: string, callback: VoidFunction) => {
     return apiClient
       .post("/auth/login", {
         email,
         password,
       })
       .then((response) => {
-        const { token, userId } = response.body;
+        const { token, userId } = response;
         // TODO: BE should send user name etc.
         setUser(userId);
         localStorage.setItem("token", token);
@@ -84,13 +90,34 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       });
   };
 
-  let signout = (callback: VoidFunction) => {
+  const signup = (
+    username: string,
+    email: string,
+    password: string,
+    callback: VoidFunction
+  ) => {
+    return apiClient
+      .post("/profile", {
+        username,
+        email,
+        password,
+        repeatedPassword: password,
+      })
+      .then((response) => {
+        const { token, username } = response;
+        setUser(username);
+        localStorage.setItem("token", token);
+        callback();
+      });
+  };
+
+  const signout = (callback: VoidFunction) => {
     setUser(null);
     localStorage.removeItem("token");
     callback();
   };
 
-  let value = { user, signin, signout };
+  let value = { user, signin, signout, signup };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
@@ -148,18 +175,38 @@ function LoginPage() {
     event.preventDefault();
 
     let formData = new FormData(event.currentTarget);
-    let email = formData.get("email") as string;
-    let password = formData.get("password") as string;
+    debugger;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const isSignup = (formData.get("repeat_password") as string) !== undefined;
 
-    auth.signin(email, password, () => {
-      // Send them back to the page they tried to visit when they were
-      // redirected to the login page. Use { replace: true } so we don't create
-      // another entry in the history stack for the login page.  This means that
-      // when they get to the protected page and click the back button, they
-      // won't end up back on the login page, which is also really nice for the
-      // user experience.
-      navigate(from, { replace: true });
-    });
+    if (isSignup) {
+      const repeatPassword = formData.get("repeat_password") as string;
+      if (password !== repeatPassword) {
+        alert("Passwords do not match");
+        return;
+      }
+      const username = formData.get("username") as string;
+      auth.signup(username, email, password, () => {
+        // Send them back to the page they tried to visit when they were
+        // redirected to the login page. Use { replace: true } so we don't create
+        // another entry in the history stack for the login page.  This means that
+        // when they get to the protected page and click the back button, they
+        // won't end up back on the login page, which is also really nice for the
+        // user experience.
+        navigate(from, { replace: true });
+      });
+    } else {
+      auth.signin(email, password, () => {
+        // Send them back to the page they tried to visit when they were
+        // redirected to the login page. Use { replace: true } so we don't create
+        // another entry in the history stack for the login page.  This means that
+        // when they get to the protected page and click the back button, they
+        // won't end up back on the login page, which is also really nice for the
+        // user experience.
+        navigate(from, { replace: true });
+      });
+    }
   }
 
   return (

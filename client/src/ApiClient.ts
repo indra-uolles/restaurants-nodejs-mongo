@@ -12,35 +12,21 @@ export default class ApiClient {
       query = "?" + query;
     }
 
-    let response;
-    try {
-      response = await fetch(this.base_url + options.url + query, {
-        method: options.method,
-        headers: {
-          "Content-Type": "application/json",
-          ...options.headers,
-        },
-        body: options.body ? JSON.stringify(options.body) : null,
-      });
-    } catch (error: any) {
-      response = {
-        ok: false,
-        status: 500,
-        json: async () => {
-          return {
-            code: 500,
-            message: "The server is unresponsive",
-            description: error.toString(),
-          };
-        },
-      };
+    const response = await fetch(this.base_url + options.url + query, {
+      method: options.method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: options.body ? JSON.stringify(options.body) : undefined,
+    });
+    if (!response.ok) {
+      const data = response.status !== 204 ? await response.json() : null;
+      console.log(response.status, response.statusText, data.errors);
+      alert("There was an error!");
+    } else {
+      const data = response.status !== 204 ? await response.json() : null;
+      return data;
     }
-
-    return {
-      ok: response.ok,
-      status: response.status,
-      body: response.status !== 204 ? await response.json() : null,
-    };
   }
 
   async get(url: string, query: any, options: any) {
