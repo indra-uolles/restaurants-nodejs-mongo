@@ -8,9 +8,9 @@ describe("user signs up", () => {
     cy.get('[data-qa="repeat_password"]').should("be.visible");
 
     cy.get('[data-qa="username"]').type("Somebody");
-    cy.get('[data-qa="email"]').type("somebody@gmail.com");
-    cy.get('[data-qa="password"]').type("12345678!");
-    cy.get('[data-qa="repeat_password"]').type("12345678!");
+    cy.get('[data-qa="email"]').type(Cypress.env("userEmail"));
+    cy.get('[data-qa="password"]').type(Cypress.env("userPassword"));
+    cy.get('[data-qa="repeat_password"]').type(Cypress.env("userPassword"));
     cy.get('[data-qa="submit"]').click();
 
     cy.get('[data-qa="protected-page"]').should("be.visible");

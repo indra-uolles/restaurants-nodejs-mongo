@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 export default function (props: any) {
-  const { handleSubmit } = props;
+  const { handleSignup, handleSignin } = props;
   let [authMode, setAuthMode] = useState("signin");
 
   const changeAuthMode = () => {
@@ -11,7 +11,7 @@ export default function (props: any) {
   if (authMode === "signin") {
     return (
       <div className="Auth-form-container" data-qa="sign-in">
-        <form className="Auth-form" onSubmit={handleSubmit}>
+        <form className="Auth-form" onSubmit={handleSignin}>
           <div className="Auth-form-content">
             <h3 className="Auth-form-title">Sign In</h3>
             <div className="text-center">
@@ -60,7 +60,7 @@ export default function (props: any) {
 
   return (
     <div className="Auth-form-container">
-      <form className="Auth-form" onSubmit={handleSubmit}>
+      <form className="Auth-form" onSubmit={handleSignup}>
         <div className="Auth-form-content">
           <h3 className="Auth-form-title">Sign Up</h3>
           <div className="text-center">
