@@ -1,4 +1,5 @@
 import { defineConfig } from "cypress";
+const { connect, disconnect } = require("./cypress/support/db");
 
 export default defineConfig({
   env: {
@@ -6,9 +7,23 @@ export default defineConfig({
     userEmail: "somebody@gmail.com",
     userPassword: "12345678!",
   },
+  numTestsKeptInMemory: 10,
   e2e: {
     setupNodeEvents(on, config) {
-      // implement node event listeners here
+      on("task", {
+        async clearDB() {
+          const db = await connect();
+          const users = db.collection("users");
+
+          console.log("clear users");
+          await users.deleteMany({});
+          await users.dropIndexes();
+
+          await disconnect();
+
+          return null;
+        },
+      });
     },
   },
 });

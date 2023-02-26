@@ -1,4 +1,8 @@
 describe("user signs up", () => {
+  beforeEach(() => {
+    cy.tests_cleanup();
+  });
+
   it("signed up user can see the protected page", () => {
     cy.visit(Cypress.env("baseUrl"));
     cy.get('[data-qa="protected-link"]').click();
