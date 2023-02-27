@@ -31,3 +31,10 @@ cd client
 npm i
 npm start
 ```
+
+### Cypress
+
+```
+cd client
+npx cypress open
+```
