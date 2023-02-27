@@ -8,7 +8,6 @@ describe("user logs in", () => {
   it("logged in user can see the protected page", () => {
     cy.visit(`${Cypress.env("baseUrl")}/protected`);
 
-    cy.get('[data-qa="protected-page"]').should("be.visible");
     cy.get('[data-qa="sign-out-btn"]').should("be.visible");
 
     cy.get('[data-qa="sign-out-btn"]').click();

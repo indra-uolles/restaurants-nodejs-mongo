@@ -14,6 +14,29 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import ApiClient from "./ApiClient";
 
+function useLocalStorage(key: any, initialValue: any) {
+  const [storedValue, setStoredValue] = React.useState(() => {
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      console.error(error);
+      return initialValue;
+    }
+  });
+  const setValue = (value: any) => {
+    try {
+      const valueToStore =
+        value instanceof Function ? value(storedValue) : value;
+      setStoredValue(valueToStore);
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  return [storedValue, setValue];
+}
+
 export default function App() {
   return (
     <AuthProvider>
@@ -73,7 +96,8 @@ let AuthContext = React.createContext<AuthContextType>(null!);
 const apiClient = new ApiClient();
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
-  let [user, setUser] = React.useState<any>(null);
+  const [selectedUser, setSelectedUser] = useLocalStorage("user", "");
+  let [user, setUser] = React.useState<any>(selectedUser ? selectedUser : null);
 
   const signin = (email: string, password: string, callback: VoidFunction) => {
     return apiClient
@@ -85,6 +109,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
         const { token, userId } = response;
         // TODO: BE should send user name etc.
         setUser(userId);
+        setSelectedUser(userId);
         localStorage.setItem("token", token);
         callback();
       });
@@ -106,6 +131,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       .then((response) => {
         const { token, username } = response;
         setUser(username);
+        setSelectedUser(username);
         localStorage.setItem("token", token);
         callback();
       });
@@ -113,6 +139,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signout = (callback: VoidFunction) => {
     setUser(null);
+    setSelectedUser(null);
     localStorage.removeItem("token");
     callback();
   };
