@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 
-export default function (props: any) {
-  const { handleSignup, handleSignin } = props;
+export default function ({
+  handleSignin,
+  handleSignup,
+}: {
+  handleSignin: React.FormEventHandler<HTMLFormElement>;
+  handleSignup: React.FormEventHandler<HTMLFormElement>;
+}) {
   let [authMode, setAuthMode] = useState("signin");
 
   const changeAuthMode = () => {

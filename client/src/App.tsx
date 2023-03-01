@@ -12,9 +12,9 @@ import {
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import ApiClient from "./ApiClient";
+import callApi from "./CallApi";
 
-function useLocalStorage(key: any, initialValue: any) {
+function useLocalStorage(key: string, initialValue: any) {
   const [storedValue, setStoredValue] = React.useState(() => {
     try {
       const item = window.localStorage.getItem(key);
@@ -24,7 +24,7 @@ function useLocalStorage(key: any, initialValue: any) {
       return initialValue;
     }
   });
-  const setValue = (value: any) => {
+  const setValue = (value: Function) => {
     try {
       const valueToStore =
         value instanceof Function ? value(storedValue) : value;
@@ -93,18 +93,20 @@ interface AuthContextType {
 }
 
 let AuthContext = React.createContext<AuthContextType>(null!);
-const apiClient = new ApiClient();
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
   const [selectedUser, setSelectedUser] = useLocalStorage("user", "");
   let [user, setUser] = React.useState<any>(selectedUser ? selectedUser : null);
 
   const signin = (email: string, password: string, callback: VoidFunction) => {
-    return apiClient
-      .post("/auth/login", {
+    return callApi({
+      method: "POST",
+      endpoint: "/auth/login",
+      data: {
         email,
         password,
-      })
+      },
+    })
       .then((response) => {
         const { token, userId } = response;
         // TODO: BE should send user name etc.
@@ -112,6 +114,9 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
         setSelectedUser(userId);
         localStorage.setItem("token", token);
         callback();
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
@@ -121,19 +126,25 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     password: string,
     callback: VoidFunction
   ) => {
-    return apiClient
-      .post("/profile", {
+    return callApi({
+      endpoint: "/profile",
+      method: "POST",
+      data: {
         username,
         email,
         password,
         repeatedPassword: password,
-      })
+      },
+    })
       .then((response) => {
         const { token, username } = response;
         setUser(username);
         setSelectedUser(username);
         localStorage.setItem("token", token);
         callback();
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
