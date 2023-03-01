@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Auth from "./Auth";
 import {
   Routes,
@@ -14,7 +14,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import callApi from "./CallApi";
 
-function useLocalStorage(key: string, initialValue: any) {
+function useLocalStorage(key: string, initialValue: string) {
   const [storedValue, setStoredValue] = React.useState(() => {
     try {
       const item = window.localStorage.getItem(key);
@@ -81,7 +81,7 @@ function Layout() {
 }
 
 interface AuthContextType {
-  user: string;
+  user: string | null;
   signin: (email: string, password: string, callback: VoidFunction) => void;
   signup: (
     username: string,
@@ -96,7 +96,9 @@ let AuthContext = React.createContext<AuthContextType>(null!);
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
   const [selectedUser, setSelectedUser] = useLocalStorage("user", "");
-  let [user, setUser] = React.useState<any>(selectedUser ? selectedUser : null);
+  let [user, setUser] = React.useState<string | null>(
+    selectedUser ? selectedUser : null
+  );
 
   const signin = (email: string, password: string, callback: VoidFunction) => {
     return callApi({
